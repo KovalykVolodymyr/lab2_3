@@ -46,6 +46,12 @@ public class SimilarityFinderTest {
         double result = similarityFinder.calculateJackardSimilarity(seq1, seq2);
         Assert.assertEquals(result, similarityFinder.calculateJackardSimilarity(seq1, seq2), 0.01);
     }
+    @Test public void calculateSimilarityhNegativeNumberSequence() {
+        int[] seq1 = {-1, -2, -3, -6, -7, -8};
+        int[] seq2 = {-1, -2, -3, -5, -6};
+        double result = similarityFinder.calculateJackardSimilarity(seq1, seq2);
+        Assert.assertEquals(result, similarityFinder.calculateJackardSimilarity(seq1, seq2), 0.01);
 
+    }
 
 }
