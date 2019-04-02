@@ -9,7 +9,7 @@ import static org.junit.Assert.*;
 public class SimilarityFinderTest {
 
     SequenceSearcherDubler searcher = new SequenceSearcherDubler();
-    SimilarityFinder similarityFinder = new SimilarityFinder(this.searcher);
+    SimilarityFinder similarityFinder = new SimilarityFinder(searcher);
 
     @Test
     public void calculateSimilarityForEmptySequences() {
@@ -19,5 +19,14 @@ public class SimilarityFinderTest {
         double result = 1.0;
         double delta = 0.01;
         Assert.assertEquals(result, similarityFinder.calculateJackardSimilarity(seq1, seq2), delta);
+    }
+
+    @Test public void sequenceSearcherCallsCounts() {
+        int[] seq1 = {1, 2, 3, 6, 7, 8};
+        int[] seq2 = {1, 2, 3, 7, 8, 9};
+        similarityFinder.calculateJackardSimilarity(seq1, seq2);
+        int counter = searcher.getCallCounter();
+        Assert.assertEquals(counter, seq1.length);
+
     }
 }
