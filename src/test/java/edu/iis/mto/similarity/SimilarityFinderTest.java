@@ -1,15 +1,15 @@
 package edu.iis.mto.similarity;
 
+import edu.iis.mto.search.SearchResult;
+import edu.iis.mto.search.SequenceSearcher;
 import org.junit.Assert;
 import org.junit.Test;
 
-import static com.sun.org.apache.xerces.internal.util.PropertyState.is;
-import static org.junit.Assert.*;
 
 public class SimilarityFinderTest {
 
-    SequenceSearcherDubler searcher = new SequenceSearcherDubler();
-    SimilarityFinder similarityFinder = new SimilarityFinder(searcher);
+
+//    SimilarityFinder similarityFinder = new SimilarityFinder(searcher);
 
     @Test
     public void calculateSimilarityForEmptySequences() {
@@ -18,37 +18,90 @@ public class SimilarityFinderTest {
         int[] seq2 = {};
         double result = 1.0;
         double delta = 0.01;
+        SequenceSearcher searcher = (key, seq) -> {
+            return SearchResult.builder().withFound(false).build();
+        };
+        SimilarityFinder similarityFinder = new SimilarityFinder(searcher);
         Assert.assertEquals(result, similarityFinder.calculateJackardSimilarity(seq1, seq2), delta);
     }
 
-    @Test public void sequenceSearcherCallsCounts() {
+    @Test
+    public void sequenceSearcherCallsCounts() {
         int[] seq1 = {1, 2, 3, 6, 7, 8};
         int[] seq2 = {1, 2, 3, 7, 8, 9};
+        final int[] callCount = {0};
+        SequenceSearcher searcher = (key, seq) -> {
+            callCount[0]++;
+            return SearchResult.builder().withFound(false).build();
+
+        };
+        SimilarityFinder similarityFinder = new SimilarityFinder(searcher);
         similarityFinder.calculateJackardSimilarity(seq1, seq2);
-        int counter = searcher.getCallCounter();
-        Assert.assertEquals(counter, seq1.length);
+
+        Assert.assertEquals(callCount[0], seq1.length);
 
     }
 
+    //
     @Test
     public void calculateSimilarityForSameSequence() {
-        int[] seq1 = {1,2,3};
-        int[] seq2 = {1,2,3};
+        int[] seq1 = {1, 2, 3};
+        int[] seq2 = {1, 2, 3};
+        SequenceSearcher searcher = (key, seq) -> {
+            return SearchResult.builder().withFound(true).build();
+        };
+        SimilarityFinder similarityFinder = new SimilarityFinder(searcher);
         double result = similarityFinder.calculateJackardSimilarity(seq1, seq2);
         Assert.assertEquals(result, similarityFinder.calculateJackardSimilarity(seq1, seq2), 0.01);
 
     }
 
+    @Test
+    public void calculateSimilarityForOnlyOneEmptySequence() {
+        int[] seq1 = {1, 2, 3};
+        int[] seq2 = {};
+        SequenceSearcher searcher = (key, seq) -> {
+            return SearchResult.builder().withFound(false).build();
+        };
+        SimilarityFinder similarityFinder = new SimilarityFinder(searcher);
+        double result = similarityFinder.calculateJackardSimilarity(seq1, seq2);
+        Assert.assertEquals(result, similarityFinder.calculateJackardSimilarity(seq1, seq2), 0.01);
+
+    }
+
+    //
     @Test
     public void calculationSymmetryForDifferentSizedSequence() {
         int[] seq1 = {1, 2, 3, 4, 5, 6, 7, 8};
         int[] seq2 = {1, 2, 3, 7, 8, 9};
+
+        SequenceSearcher searcher = (key, seq) -> {
+            if (key < 8) {
+                return SearchResult.builder().withFound(true).build();
+            } else {
+                return SearchResult.builder().withFound(false).build();
+            }
+
+        };
+        SimilarityFinder similarityFinder = new SimilarityFinder(searcher);
         double result = similarityFinder.calculateJackardSimilarity(seq1, seq2);
         Assert.assertEquals(result, similarityFinder.calculateJackardSimilarity(seq1, seq2), 0.01);
     }
-    @Test public void calculateSimilarityhNegativeNumberSequence() {
+
+
+    @Test
+    public void calculateSimilarityhNegativeNumberSequence() {
         int[] seq1 = {-1, -2, -3, -6, -7, -8};
         int[] seq2 = {-1, -2, -3, -5, -6};
+        SequenceSearcher searcher = (key, seq) -> {
+            if (key < 6) {
+                return SearchResult.builder().withFound(true).build();
+            } else {
+                return SearchResult.builder().withFound(false).build();
+            }
+
+        };
+        SimilarityFinder similarityFinder = new SimilarityFinder(searcher);
         double result = similarityFinder.calculateJackardSimilarity(seq1, seq2);
         Assert.assertEquals(result, similarityFinder.calculateJackardSimilarity(seq1, seq2), 0.01);
 
