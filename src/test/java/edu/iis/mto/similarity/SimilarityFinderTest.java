@@ -39,5 +39,13 @@ public class SimilarityFinderTest {
 
     }
 
+    @Test
+    public void calculationSymmetryForDifferentSizedSequence() {
+        int[] seq1 = {1, 2, 3, 4, 5, 6, 7, 8};
+        int[] seq2 = {1, 2, 3, 7, 8, 9};
+        double result = similarityFinder.calculateJackardSimilarity(seq1, seq2);
+        Assert.assertEquals(result, similarityFinder.calculateJackardSimilarity(seq1, seq2), 0.01);
+    }
+
 
 }
