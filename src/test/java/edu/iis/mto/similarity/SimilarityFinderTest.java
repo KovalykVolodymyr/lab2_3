@@ -29,4 +29,15 @@ public class SimilarityFinderTest {
         Assert.assertEquals(counter, seq1.length);
 
     }
+
+    @Test
+    public void calculateSimilarityForSameSequence() {
+        int[] seq1 = {1,2,3};
+        int[] seq2 = {1,2,3};
+        double result = similarityFinder.calculateJackardSimilarity(seq1, seq2);
+        Assert.assertEquals(result, similarityFinder.calculateJackardSimilarity(seq1, seq2), 0.01);
+
+    }
+
+
 }
