@@ -82,8 +82,9 @@ public class SimilarityFinderTest {
 
         };
         SimilarityFinder similarityFinder = new SimilarityFinder(searcher);
-        double result = similarityFinder.calculateJackardSimilarity(seq1, seq2);
-        Assert.assertEquals(result, similarityFinder.calculateJackardSimilarity(seq2, seq1), 0.01);
+        double resultLeft = similarityFinder.calculateJackardSimilarity(seq1, seq2);
+        double resultRight = similarityFinder.calculateJackardSimilarity(seq2, seq1);
+        Assert.assertEquals(resultLeft, resultRight, 0.01);
     }
 
 
