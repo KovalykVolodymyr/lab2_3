@@ -9,8 +9,6 @@ import org.junit.Test;
 public class SimilarityFinderTest {
 
 
-//    SimilarityFinder similarityFinder = new SimilarityFinder(searcher);
-
     @Test
     public void calculateSimilarityForEmptySequences() {
 
@@ -42,7 +40,7 @@ public class SimilarityFinderTest {
 
     }
 
-    //
+
     @Test
     public void calculateSimilarityForSameSequence() {
         int[] seq1 = {1, 2, 3};
@@ -52,7 +50,7 @@ public class SimilarityFinderTest {
         };
         SimilarityFinder similarityFinder = new SimilarityFinder(searcher);
         double result = similarityFinder.calculateJackardSimilarity(seq1, seq2);
-        Assert.assertEquals(result, similarityFinder.calculateJackardSimilarity(seq1, seq2), 0.01);
+        Assert.assertEquals(result, 1, 0.01);
 
     }
 
@@ -65,18 +63,18 @@ public class SimilarityFinderTest {
         };
         SimilarityFinder similarityFinder = new SimilarityFinder(searcher);
         double result = similarityFinder.calculateJackardSimilarity(seq1, seq2);
-        Assert.assertEquals(result, similarityFinder.calculateJackardSimilarity(seq1, seq2), 0.01);
+        Assert.assertEquals(result, 0, 0.01);
 
     }
 
-    //
+
     @Test
     public void calculationSymmetryForDifferentSizedSequence() {
-        int[] seq1 = {1, 2, 3, 4, 5, 6, 7, 8};
-        int[] seq2 = {1, 2, 3, 7, 8, 9};
+        int[] seq1 = {1, 2, 3, 4, 5, 6};
+        int[] seq2 = {1, 2, 3, 4};
 
         SequenceSearcher searcher = (key, seq) -> {
-            if (key < 8) {
+            if (key < 5) {
                 return SearchResult.builder().withFound(true).build();
             } else {
                 return SearchResult.builder().withFound(false).build();
@@ -85,25 +83,23 @@ public class SimilarityFinderTest {
         };
         SimilarityFinder similarityFinder = new SimilarityFinder(searcher);
         double result = similarityFinder.calculateJackardSimilarity(seq1, seq2);
-        Assert.assertEquals(result, similarityFinder.calculateJackardSimilarity(seq1, seq2), 0.01);
+        Assert.assertEquals(result, similarityFinder.calculateJackardSimilarity(seq2, seq1), 0.01);
     }
 
 
     @Test
     public void calculateSimilarityhNegativeNumberSequence() {
         int[] seq1 = {-1, -2, -3, -6, -7, -8};
-        int[] seq2 = {-1, -2, -3, -5, -6};
+        int[] seq2 = {-1, -2, -3, -6, -7, -8};
         SequenceSearcher searcher = (key, seq) -> {
-            if (key < 6) {
-                return SearchResult.builder().withFound(true).build();
-            } else {
-                return SearchResult.builder().withFound(false).build();
-            }
+
+            return SearchResult.builder().withFound(true).build();
+
 
         };
         SimilarityFinder similarityFinder = new SimilarityFinder(searcher);
         double result = similarityFinder.calculateJackardSimilarity(seq1, seq2);
-        Assert.assertEquals(result, similarityFinder.calculateJackardSimilarity(seq1, seq2), 0.01);
+        Assert.assertEquals(result, 1, 0.01);
 
     }
 
